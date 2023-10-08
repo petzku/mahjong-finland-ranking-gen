@@ -25,10 +25,20 @@ ranking = []
 for nth, name, i, t, p in uusi:
     if name in vanha:
         delta = vanha[name] - nth
+        # format delta to up/down arrows
+        if delta > 0:
+            # up
+            muutos = f"↑{delta}"
+        elif delta < 0:
+            # down
+            muutos = f"↓{-delta}"
+        else:
+            # unchanged
+            muutos = "–"
     else:
-        delta = "uusi"
+        muutos = "uusi"
 
-    ranking.append((nth, delta, name, i, t, p))
+    ranking.append((nth, muutos, name, i, t, p))
 
 outfile = "ranks.md"
 with open(outfile, "w", encoding="utf-8") as fo:
