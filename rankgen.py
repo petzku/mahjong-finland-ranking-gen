@@ -25,24 +25,49 @@ ranking = []
 for nth, name, i, t, p in uusi:
     if name in vanha:
         delta = vanha[name] - nth
-        # format delta to up/down arrows
-        if delta > 0:
+    else:
+        delta = "uusi"
+
+    ranking.append((nth, delta, name, i, t, p))
+
+
+outfile = "ranks.html"
+
+with open(outfile, "w", encoding="utf-8") as fo:
+    # heading part
+    fo.write(
+        """<tr style="height: 15.0pt;">
+    <td class="xl92" style="width: 21pt; height: 15.0pt;" width="28" height="20"><strong>Sija</strong></td>
+    <td class="xl91" style="width: 23pt;" width="30"><strong>↑↓</strong></td>
+    <td class="xl17" style="width: 121pt;" width="170"><strong>Nimi</strong></td>
+    <td class="xl91" style="width: 23pt;" width="30"><strong>ID</strong></td>
+    <td class="xl17" style="width: 55pt;" width="73"><strong>Turnauksia</strong></td>
+    <td class="xl17" style="width: 75pt;" width="100"><strong>Sijoituslukema</strong></td>
+</tr>\n\n"""
+    )
+
+    for nth, delta, name, idn, tourns, pts in ranking:
+        # format delta to up/down arrows as applicable
+        if delta == "uusi":
+            # new player
+            muutos = '<span style="color: green;">uusi</span>'
+        elif delta > 0:
             # up
-            muutos = f"↑{delta}"
+            muutos = f'<span style="color: green;">↑{delta}</span>'
         elif delta < 0:
             # down
-            muutos = f"↓{-delta}"
+            muutos = f'<span style="color: red;">↓{-delta}</span>'
         else:
             # unchanged
             muutos = "–"
-    else:
-        muutos = "uusi"
 
-    ranking.append((nth, muutos, name, i, t, p))
-
-outfile = "ranks.md"
-with open(outfile, "w", encoding="utf-8") as fo:
-    fo.write("Sija | ↑↓ | Nimi | ID | Turnauksia | Sijoituslukema\n")
-    fo.write("-----|----|------|----|------------|---------------\n")
-
-    fo.writelines("{} | {} | {} | {} | {} | {}\n".format(*data) for data in ranking)
+        fo.write(
+            f"""<tr style="height: 15.0pt;">
+    <td class="xl92" style="height: 15.0pt;" height="20"><strong>{nth}</strong></td>
+    <td class="xl91">{muutos}</td>
+    <td class="xl17">{name}</td>
+    <td class="xl91">{idn}</td>
+    <td class="xl91" style="text-align: center;">{tourns}</td>
+    <td class="xl91" style="text-align: center;">{pts.replace(".", ",")}</td>
+</tr>\n"""
+        )
